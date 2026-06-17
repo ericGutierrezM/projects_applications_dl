@@ -1,3 +1,12 @@
+"""
+This code file generates road masks using a vector
+of the road infrastructure in the Philippines.
+
+Authors: Joshua Castillo and Eric Gutiérrez
+Barcelona School of Economics, June 2026
+"""
+
+# Imports
 import cv2
 import numpy as np
 import pandas as pd
