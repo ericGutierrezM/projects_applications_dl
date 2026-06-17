@@ -2,3 +2,59 @@ final_project/SH_CLIENT_ID.txt
 final_project/SH_CLIENT_SECRET.txt
 final_project/data/images/
 final_project/data/philippines_shp
+
+# ==========================================
+# DATASET & IMAGE DATA
+# ==========================================
+# Ignore the root data directory where ETCI datasets are stored
+data/
+*dataset*/
+*data*/
+
+# Ignore all image file types globally (just in case they end up outside data/)
+*.png
+*.jpg
+*.jpeg
+*.tif
+*.tiff
+*.bmp
+
+# Ignore specific ETCI folder structures if placed directly in root
+**/tiles/
+**/vv/
+**/vh/
+**/flood_label/
+**/water_body_label/
+val_without_ref_labels/
+
+# ==========================================
+# MACHINE LEARNING ARTIFACTS
+# ==========================================
+# Model checkpoints and saved weight weights
+*.pth
+*.pt
+*.pkl
+*.h5
+
+# TensorBoard logs or MLflow outputs
+runs/
+.mlruns/
+lightning_logs/
+
+# ==========================================
+# JUPYTER & PYTHON SYSTEM FILES
+# ==========================================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+__pycache__/
+*.pyc
+
+# ==========================================
+# ENVIRONMENT & IDE
+# ==========================================
+.env
+.venv
+venv/
+env/
+.vscode/
+.idea/
