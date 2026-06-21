@@ -7,9 +7,8 @@ final_project/data/philippines_shp
 # DATASET & IMAGE DATA
 # ==========================================
 # Ignore the root data directory where ETCI datasets are stored
-data/
-*dataset*/
-*data*/
+data/images
+data/philippines_shp
 
 # Ignore all image file types globally (just in case they end up outside data/)
 *.png
