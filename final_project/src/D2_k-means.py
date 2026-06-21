@@ -1,3 +1,13 @@
+"""
+This code file performs a time series
+unsupervised clustering algorithm to
+classify the projects in 3 groups.
+
+Authors: Joshua Castillo and Eric Gutiérrez
+Barcelona School of Economics, June 2026
+"""
+
+# Imports
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,12 +15,14 @@ from tslearn.clustering import TimeSeriesKMeans
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 
 def run_timeseries_clustering(csv_path="data/dataset_w_baseline.csv", n_clusters=3):
-    print("🚀 Initializing Time-Series Clustering pipeline...")
+    print("Initializing Time-Series Clustering pipeline...")
     
     # 1. Load Data
     df = pd.read_csv(csv_path)
     
-    # The columns containing your sequential ViT scores
+    # To run the clustering with the predictions
+    # from changeStar, change the file name and
+    # replace the column names by the ones below. 
     """
     cols = [
         'vit_delta_00_to_25', 'vit_delta_25_to_50', 
@@ -29,16 +41,13 @@ def run_timeseries_clustering(csv_path="data/dataset_w_baseline.csv", n_clusters
     # Extract the data into a NumPy array
     raw_time_series = clean_df[cols].values
     
-    # tslearn expects shape (n_samples, n_timesteps, n_dimensions)
     X = raw_time_series.reshape((raw_time_series.shape[0], raw_time_series.shape[1], 1))
     
-    # Optional but recommended: Scale the time series so the algorithm 
-    # focuses strictly on the SHAPE of the curve rather than absolute magnitude
+    # Scale
     X_scaled = TimeSeriesScalerMeanVariance().fit_transform(X)
     
     # 2. Configure and Run DTW K-Means
-    print(f"🧠 Running DTW K-Means to find {n_clusters} distinct construction patterns...")
-    # random_state ensures reproducibility for your poster
+    print(f"Running DTW K-Means to find {n_clusters} distinct construction patterns...")
     model = TimeSeriesKMeans(n_clusters=n_clusters, metric="dtw", 
                              max_iter=10, random_state=42, n_jobs=-1)
     
@@ -46,7 +55,7 @@ def run_timeseries_clustering(csv_path="data/dataset_w_baseline.csv", n_clusters
     labels = model.fit_predict(X_scaled)
     clean_df['construction_cluster'] = labels
     
-    # 3. Visualization for your Poster
+    # 3. Visualization
     print("📊 Generating Cluster Visualization...")
     fig, axes = plt.subplots(1, n_clusters, figsize=(18, 5), sharey=True)
     x_labels = ['0-25%', '25-50%', '50-75%', '75-100%', 'Post']
@@ -56,11 +65,9 @@ def run_timeseries_clustering(csv_path="data/dataset_w_baseline.csv", n_clusters
         # Get all time series that fall into this cluster
         cluster_series = X_scaled[labels == yi]
         
-        # Plot the individual projects as faint background lines
         for xx in cluster_series:
             ax.plot(x_labels, xx.ravel(), "k-", alpha=0.05)
             
-        # Plot the "Barycenter" (The mathematical average shape of this cluster)
         barycenter = model.cluster_centers_[yi].ravel()
         ax.plot(x_labels, barycenter, "r-", linewidth=3, label="Cluster Average")
         
@@ -83,9 +90,7 @@ def run_timeseries_clustering(csv_path="data/dataset_w_baseline.csv", n_clusters
     
     out_csv = "data/dataset_clustered.csv"
     final_df.to_csv(out_csv, index=False)
-    print(f"✅ Clustering complete! Labeled data saved to {out_csv}")
+    print(f"Clustering complete! Labeled data saved to {out_csv}")
 
 if __name__ == "__main__":
-    # You can change n_clusters to 2 if you strictly want "Finished" vs "Stalled"
-    # 3 is usually better: "Normal", "Delayed/Late", and "Abandoned"
     run_timeseries_clustering(n_clusters=3)

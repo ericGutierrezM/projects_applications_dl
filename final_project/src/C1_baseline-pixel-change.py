@@ -1,6 +1,9 @@
 """
-This code file generates road masks using a vector
-of the road infrastructure in the Philippines.
+This code file evaluates changes at the
+pixel-level for any given pair of images
+using a naïve normalized difference of
+pixels. The aggregation at the image
+level is done by taking a simple average.
 
 Authors: Joshua Castillo and Eric Gutiérrez
 Barcelona School of Economics, June 2026
@@ -16,7 +19,6 @@ from tqdm import tqdm
 def compute_interval_changes(csv_path):
     df = pd.read_csv(csv_path)
     
-    # The exact chronological sequence of your images
     milestones = [
         "00_pre_start", 
         "25_progress", 
@@ -26,10 +28,9 @@ def compute_interval_changes(csv_path):
         "post_completion"
     ]
     
-    # We will store the average change score for each interval
     results = []
 
-    for idx, row in tqdm(df.iterrows(), total=len(df), desc="Computing Pixel $\Delta$"):
+    for idx, row in tqdm(df.iterrows(), total=len(df), desc="Computing Pixel Deltas"):
         contract_id = row['contractId']
         folder = Path(row['image_folder_path'])
         mask_path = folder / f"{contract_id}_road_mask.png"
@@ -86,10 +87,6 @@ def compute_interval_changes(csv_path):
             mean_change = np.mean(road_pixels_only) if len(road_pixels_only) > 0 else 0
             
             project_scores[interval_name] = mean_change
-            
-            # Optional: Save the normalized difference matrices as visual heatmaps
-            # heatmap_path = folder / f"{contract_id}_{interval_name}_heatmap.png"
-            # cv2.imwrite(str(heatmap_path), (normalized_diff * 255).astype(np.uint8))
             
         results.append(project_scores)
 
